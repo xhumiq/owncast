@@ -5,36 +5,33 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-INSTALL_TEMP_DIRECTORY="$(mktemp -d)"
-PROJECT_SOURCE_DIR=$(pwd)
-cd $INSTALL_TEMP_DIRECTORY
+TMP_DIR="$(mktemp -d)"
+REPO_DIR=$TMP_DIR/owncast-admin
+SRC_DIR=$(pwd)
 
 shutdown () {
-  rm -rf "$PROJECT_SOURCE_DIR/admin"
-  rm -rf "$INSTALL_TEMP_DIRECTORY"
+  rm -rf "$SRC_DIR/admin"
+  rm -rf "$TMP_DIR"
 }
 trap shutdown INT TERM ABRT EXIT
 
-echo "Cloning owncast admin into $INSTALL_TEMP_DIRECTORY..."
-git clone https://github.com/owncast/owncast-admin 2> /dev/null
-cd owncast-admin
+echo "Cloning owncast admin into $TMP_DIR..."
+git clone https://github.com/owncast/owncast-admin $REPO_DIR 2> /dev/null
 
 echo "Installing npm modules for the owncast admin..."
-npm --silent install 2> /dev/null
+(cd ${REPO_DIR}; npm --silent install 2> /dev/null)
 
 echo "Building owncast admin..."
-rm -rf .next
-(node_modules/.bin/next build && node_modules/.bin/next export) | grep info
+rm -rf ${REPO_DIR}/.next
+(cd ${REPO_DIR}; node_modules/.bin/next build && node_modules/.bin/next export) | grep info
 
 echo "Copying admin to project directory..."
-ADMIN_BUILD_DIR=$(pwd)
-cd $PROJECT_SOURCE_DIR
-mkdir -p admin 2> /dev/null
-cd admin
-cp -R ${ADMIN_BUILD_DIR}/out/* .
+rm -rf "${SRC_DIR}/admin"
+cp -R ${REPO_DIR}/out ${SRC_DIR}/admin
 
 echo "Bundling admin into owncast codebase..."
-~/go/bin/pkger
+rm -rf "$SRC_DIR/pkged.go"
+cd $SRC_DIR; ~/go/bin/pkger
 
 shutdown
 echo "Done."

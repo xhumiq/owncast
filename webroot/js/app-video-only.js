@@ -122,8 +122,8 @@ export default class VideoOnly extends Component {
   }
 
   setConfigData(data = {}) {
-    const { title, summary } = data;
-    window.document.title = title;
+    const { streamTitle, summary } = data;
+    window.document.title = streamTitle;
     this.setState({
       configData: {
         ...data,

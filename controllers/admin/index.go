@@ -23,7 +23,7 @@ func ServeAdmin(w http.ResponseWriter, r *http.Request) {
 	if dirCheck != nil && err == nil && dirCheck.IsDir() {
 		path = filepath.Join(path, "index.html")
 	}
-
+  println("Path", path)
 	f, err := pkger.Open(path)
 	if err != nil {
 		log.Debugln(err, path)

@@ -1,7 +1,8 @@
 package core
 
 import (
-	"math"
+  "github.com/owncast/owncast/utils"
+  "math"
 	"sync"
 	"time"
 
@@ -60,7 +61,9 @@ func RemoveChatClient(clientID string) {
 	delete(_stats.ChatClients, clientID)
 	l.Unlock()
 }
-
+func init(){
+  utils.AddGauge("viewer_count", "server")
+}
 // SetViewerIDActive sets a client as active and connected.
 func SetViewerIDActive(id string) {
 	l.Lock()
@@ -70,9 +73,12 @@ func SetViewerIDActive(id string) {
 
 	// Don't update viewer counts if a live stream session is not active.
 	if _stats.StreamConnected {
+	  utils.GaugeSetInt("viewer_count", len(_stats.Viewers), utils.HostName)
 		_stats.SessionMaxViewerCount = int(math.Max(float64(len(_stats.Viewers)), float64(_stats.SessionMaxViewerCount)))
 		_stats.OverallMaxViewerCount = int(math.Max(float64(_stats.SessionMaxViewerCount), float64(_stats.OverallMaxViewerCount)))
-	}
+	}else{
+    utils.GaugeSetInt("viewer_count", 0, utils.HostName)
+  }
 }
 
 func pruneViewerCount() {

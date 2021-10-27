@@ -1,25 +1,35 @@
 package router
 
 import (
-	"fmt"
-	"net"
-	"net/http"
+  "fmt"
+  "github.com/prometheus/client_golang/prometheus/promhttp"
+  "net"
+  "net/http"
 
-	log "github.com/sirupsen/logrus"
+  log "github.com/sirupsen/logrus"
 
-	"github.com/owncast/owncast/config"
-	"github.com/owncast/owncast/controllers"
-	"github.com/owncast/owncast/controllers/admin"
-	"github.com/owncast/owncast/core/chat"
-	"github.com/owncast/owncast/core/user"
-	"github.com/owncast/owncast/router/middleware"
-	"github.com/owncast/owncast/utils"
-	"github.com/owncast/owncast/yp"
+  "github.com/owncast/owncast/config"
+  "github.com/owncast/owncast/controllers"
+  "github.com/owncast/owncast/controllers/admin"
+  "github.com/owncast/owncast/core/chat"
+  "github.com/owncast/owncast/core/user"
+  "github.com/owncast/owncast/router/middleware"
+  "github.com/owncast/owncast/utils"
+  "github.com/owncast/owncast/yp"
+  metrics "github.com/slok/go-http-metrics/metrics/prometheus"
+  metricsware "github.com/slok/go-http-metrics/middleware"
+  middlewarestd "github.com/slok/go-http-metrics/middleware/std"
 )
 
 // Start starts the router for the http, ws, and rtmp.
 func Start() error {
-	// static files
+  hlsRecorder := metricsware.New(metricsware.Config{
+    Service: "owncast",
+    Recorder: metrics.NewRecorder(metrics.Config{}),
+  })
+  // Return HLS video
+
+  // static files
 	http.HandleFunc("/", controllers.IndexHandler)
 
 	// admin static files
@@ -76,7 +86,7 @@ func Start() error {
 	http.HandleFunc("/api/admin/status", middleware.RequireAdminAuth(admin.Status))
 
 	// Return HLS video
-	http.HandleFunc("/hls/", controllers.HandleHLSRequest)
+  http.Handle("/hls/", middlewarestd.Handler("hls", hlsRecorder, http.HandlerFunc(controllers.HandleHLSRequest)))
 
 	// Disconnect inbound stream
 	http.HandleFunc("/api/admin/disconnect", middleware.RequireAdminAuth(admin.DisconnectInboundConnection))
@@ -195,13 +205,13 @@ func Start() error {
 	http.HandleFunc("/api/admin/config/ffmpegpath", middleware.RequireAdminAuth(admin.SetFfmpegPath))
 
 	// Server http port
-	http.HandleFunc("/api/admin/config/webserverport", middleware.RequireAdminAuth(admin.SetWebServerPort))
+	//http.HandleFunc("/api/admin/config/webserverport", middleware.RequireAdminAuth(admin.SetWebServerPort))
 
 	// Server http listen address
-	http.HandleFunc("/api/admin/config/webserverip", middleware.RequireAdminAuth(admin.SetWebServerIP))
+	//http.HandleFunc("/api/admin/config/webserverip", middleware.RequireAdminAuth(admin.SetWebServerIP))
 
 	// Server rtmp port
-	http.HandleFunc("/api/admin/config/rtmpserverport", middleware.RequireAdminAuth(admin.SetRTMPServerPort))
+	//http.HandleFunc("/api/admin/config/rtmpserverport", middleware.RequireAdminAuth(admin.SetRTMPServerPort))
 
 	// Is server marked as NSFW
 	http.HandleFunc("/api/admin/config/nsfw", middleware.RequireAdminAuth(admin.SetNSFW))
@@ -238,7 +248,9 @@ func Start() error {
 		chat.HandleClientConnection(w, r)
 	})
 
-	port := config.WebServerPort
+  http.Handle("/metrics", promhttp.Handler())
+
+  port := config.WebServerPort
 	ip := config.WebServerIP
 
 	ipAddr := net.ParseIP(ip)

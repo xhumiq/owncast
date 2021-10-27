@@ -34,6 +34,7 @@ owncast.log*
 chat.db
 .yp.key
 backup/
+static/admin
 !webroot/js/web_modules/**/dist
 !core/data
 test/test.db

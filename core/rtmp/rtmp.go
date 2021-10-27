@@ -2,7 +2,8 @@ package rtmp
 
 import (
 	"fmt"
-	"io"
+  "github.com/owncast/owncast/utils"
+  "io"
 	"net"
 	"time"
 
@@ -25,6 +26,11 @@ var _rtmpConnection net.Conn
 var _setStreamAsConnected func(*io.PipeReader)
 var _setBroadcaster func(models.Broadcaster)
 
+func init(){
+  utils.AddCounter("rtmp_event", "server", "local", "remote", "event")
+  utils.AddCounter("rtmp_src_bytes", "server", "local", "remote")
+}
+
 // Start starts the rtmp service, listening on specified RTMP port.
 func Start(setStreamAsConnected func(*io.PipeReader), setBroadcaster func(models.Broadcaster)) {
 	_setStreamAsConnected = setStreamAsConnected
@@ -40,6 +46,7 @@ func Start(setStreamAsConnected func(*io.PipeReader), setBroadcaster func(models
 
 	s.LogEvent = func(c *rtmp.Conn, nc net.Conn, e int) {
 		es := rtmp.EventString[e]
+    utils.CounterIncInt("rtmp_event", 1, utils.HostName, nc.LocalAddr().String(), nc.RemoteAddr().String(), es)
 		log.Traceln("RTMP", nc.LocalAddr(), nc.RemoteAddr(), es)
 	}
 
@@ -121,6 +128,7 @@ func HandleConn(c *rtmp.Conn, nc net.Conn) {
 			handleDisconnect(nc)
 			return
 		}
+		utils.CounterIncInt("rtmp_src_bytes", len(pkt.Data), utils.HostName, nc.LocalAddr().String(), nc.RemoteAddr().String())
 	}
 }
 
