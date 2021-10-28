@@ -31,11 +31,16 @@ all: build-app
 
 ecr_push: clean-dist build-admin build-css docker_build tag aws_login push
 
+start: build
+	cd ${BUILD_PATH}/owncast/${BUILD_DISTRO} && \
+	BROWSER_TEST=true ./owncast
+
 docker_build: docker_loc_build
 
 build-all: clean-dist build-admin build-app build-css
 
 build: build-app
+	@cp -R ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot ./
 
 build-app:
 	@export GOPRIVATE=bitbucket.org/xhumiq; \
@@ -129,7 +134,6 @@ tag:
 push:
 	docker push ${docker_reg}/${dkname}:${BUILD_VERSION}
 	docker push ${docker_reg}/${dkname}:latest
-
 
 inc-patch:
 	@export MEET_TAG=$$(git tag --points-at $$(git rev-parse --verify HEAD) | tail -1) && \
