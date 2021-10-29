@@ -126,10 +126,11 @@ export default class VideoOnly extends Component {
 
   setConfigData(data = {}) {
     const { streamTitle, summary } = data;
-    window.document.title = streamTitle;
+    window.document.title = streamTitle + " Broadcast";
     this.setState({
       configData: {
         ...data,
+        streamTitle,
         summary: summary && addNewlines(summary),
       },
     });
@@ -258,7 +259,7 @@ export default class VideoOnly extends Component {
       ? null
       : html` <${VideoPoster} offlineImage=${logo} active=${streamOnline} /> `;
     const loginForm = authToken ? null : html`
-      <${LoginForm} onSubmit=${this.handleLogin}/>
+      <${LoginForm} server="${configData.streamTitle}" onSubmit=${this.handleLogin}/>
     `;
     return html`
       <main class=${mainClass} class="bg-black">

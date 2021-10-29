@@ -35,7 +35,7 @@ func main() {
 	rtmpPortOverride := flag.Int("rtmpport", 0, "Set listen port for the RTMP server")
   serverName := flag.String("serverName", "", "Set server name")
   newStreamKey := flag.String("streamKey", "", "Set your stream key/admin password")
-  newStreamKeyFile := flag.String("streamKeyFile", "", "Set your stream key/admin password")
+  newStreamKeyFile := flag.String("streamKeyFile", "", "Stream key/admin password file")
 
   if *serverName == ""{
     if f, ok := os.LookupEnv("OWNCAST_SERVER"); ok{
@@ -54,6 +54,9 @@ func main() {
       *rtmpPortOverride, _ = strconv.Atoi(f)
     }
   }
+
+  configureLogging(*enableDebugOptions, *enableVerboseLogging)
+  log.Infoln(config.GetReleaseString())
 
   if *newStreamKey == ""{
     if *newStreamKeyFile == ""{
@@ -87,9 +90,6 @@ func main() {
 			log.Fatalln("Cannot create data directory", err)
 		}
 	}
-
-	configureLogging(*enableDebugOptions, *enableVerboseLogging)
-	log.Infoln(config.GetReleaseString())
 
 	// Allows a user to restore a specific database backup
 	if *restoreDatabaseFile != "" {
@@ -134,11 +134,11 @@ func main() {
 
   if *serverName != ""{
     utils.HostName = *serverName
-    if err := data.SetStreamTitle(*serverName + " Broadcast"); err != nil {
+    if err := data.SetStreamTitle(*serverName); err != nil {
       log.Errorln("Error setting your stream title.", err)
       log.Exit(1)
     }
-    log.Println("Saving new stream title", *serverName + " Broadcast")
+    log.Println("Saving new stream title", *serverName)
   }
 
   // Set the web server port

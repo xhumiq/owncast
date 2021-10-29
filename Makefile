@@ -33,6 +33,7 @@ ecr_push: clean-dist build-admin build-css docker_build tag aws_login push
 
 start: build
 	cd ${BUILD_PATH}/owncast/${BUILD_DISTRO} && \
+	export OWNCAST_SERVER="Local Test" && \
 	BROWSER_TEST=true ./owncast
 
 docker_build: docker_loc_build
