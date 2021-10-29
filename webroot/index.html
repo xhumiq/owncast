@@ -1,237 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    
-    
-    <meta http-equiv="cache-control" content="max-age=0" />
-<meta http-equiv="cache-control" content="no-cache" />
-<meta http-equiv="expires" content="0" />
-<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-<meta http-equiv="pragma" content="no-cache" />
-
+<html>
+  <head>
     <title>Owncast</title>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link rel="apple-touch-icon" sizes="57x57" href="/img/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
-
-    <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
- 
-
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
-    <link rel="stylesheet" href="assets/css/Login-Form-Dark.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-
-    <link rel="manifest" href="/manifest.json">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
     <link href="/js/web_modules/tailwindcss/dist/tailwind.min.css" rel="stylesheet" />
 
-    <link href="/js/web_modules/videojs/video-js.min.css" rel="stylesheet" />
+    <link href="/js/web_modules/videojs/video-js.min.css" rel="stylesheet"/>
     <link href="/js/web_modules/@videojs/themes/fantasy/index.css" rel="stylesheet" />
-  
+
     <link href="./styles/video.css" rel="stylesheet" />
-    <link href="./styles/chat.css" rel="stylesheet" />
-    <link href="./styles/user-content.css" rel="stylesheet" />
-    <link href="./styles/app.css" rel="stylesheet" />
- 
-    <script type="preload" src="/js/components/platform-logos-list.js"></script>
-    <script type="preload" src="/js/components/chat/chat-input.js"></script>
-    <script type="preload" src="/js/components/chat/message.js"></script>
-    <script type="preload" src="/js/components/chat/content-editable.js"></script>
-    <script type="preload" src="/js/components/chat/chat.js"></script>
-    <script type="preload" src="/js/components/chat/chat-message-view.js"></script>
-    <script type="preload" src="/js/components/chat/username.js"></script>
-    <script type="preload" src="/js/components/external-action-modal.js"></script>
-    <script type="preload" src="/js/components/player.js"></script>
-    <script type="preload" src="/js/components/video-poster.js"></script>
-    <script type="preload" src="/js/app.js"></script>
-    <script type="preload" src="/js/web_modules/preact.js"></script>
-    <script type="preload" src="/js/web_modules/micromodal/dist/micromodal.min.js"></script>
-    <script type="preload" src="/js/web_modules/common/core-a6c34bea.js"></script>
-    <script type="preload" src="/js/web_modules/common/_commonjsHelpers-37fa8da4.js"></script>
-    <script type="preload" src="/js/web_modules/common/core-d14f1e1c.js"></script>
-    <script type="preload" src="/js/web_modules/common/core-fed3ccd8.js"></script>
-    <script type="preload" src="/js/web_modules/common/core-f87370e0.js"></script>
-    <script type="preload" src="/js/web_modules/common/core-d20ff47c.js"></script>
-    <script type="preload" src="/js/web_modules/@videojs/http-streaming/dist/videojs-http-streaming.min.js"></script>
-    <script type="preload" src="/js/web_modules/markjs/dist/mark.es6.min.js"></script>
-    <script type="preload" src="/js/web_modules/@joeattardi/emoji-button.js"></script>
-    <script type="preload" src="/js/web_modules/htm.js"></script>
-    <script type="preload" src="/js/web_modules/videojs/core.js"></script>
-    <script type="preload" src="/js/utils/helpers.js"></script>
-    <script type="preload" src="/js/utils/user-colors.js"></script>
-    <script type="preload" src="/js/utils/constants.js"></script>
-    <script type="preload" src="/js/utils/chat.js"></script>
-    <script type="preload" src="/js/utils/websocket.js"></script>
- 
-    <!--script src="js/keycloak.js"></script>
-    <!--script src="https://auth-jp1.kefacp.com/auth/js/keycloak.js"></script>
-    
-    <script src="/js/initKeycloak.js"></script-->
-    <script src="/js/login.js"></script>
-</head>
- 
-<body class="scrollbar-hidden bg-gray-300 text-gray-800"  > 
-  
- 
-  <section class="login-dark">
-    <div id="form">   
-    
-        <h2 style="font-size:48px; font-weight: 500;" >Login Form</h2>
-        <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
-        <div class="mb-3"><input id="username" class="form-control" type="text" name="Username" placeholder="Username"></div>
-        <div class="mb-3"><input id="password" class="form-control" type="password" name="password" placeholder="Password"></div>
-        <div class="mb-3"><button id="loginButton" class="btn btn-primary d-block w-100"  >GET STARTED</button></div>
-    
-  </div>
-</section>
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <link href="./styles/video-only.css" rel="stylesheet" />
+  </head>
 
+  <body>
 
-  <div id="app" >
-    <div id="loading-logo-container">
-      <img id="loading-logo" src="/logo">
-    </div>
-  </div>
-<script type="module">
-import { h, render } from '/js/web_modules/preact.js';
-import htm from '/js/web_modules/htm.js';
-const html = htm.bind(h);
-import App from './js/app.js';
+    <div id="video-only"></div>
 
-$(document).ready(function(){
-    $("#loginButton").click(
-      function(){
-         
-        let  username = $("#username").val();
-        let  password = $("#password").val();
-        let client_id = "owncast";
-        let grant_type = "password";
-        let scope = "openid";
-        let url = "https://auth-jp1.kefacp.com/auth/realms/chat-acp/protocol/openid-connect/token";
-        const XHR = new XMLHttpRequest();
-        let urlEncodedData = "",
-        urlEncodedDataPairs = [] ;
-        
-        
-        urlEncodedDataPairs.push(encodeURIComponent("username")+"="+encodeURIComponent(username));
-        urlEncodedDataPairs.push(encodeURIComponent("password")+"="+encodeURIComponent(password));
-        urlEncodedDataPairs.push(encodeURIComponent("client_id")+"="+encodeURIComponent(client_id));
-        urlEncodedDataPairs.push(encodeURIComponent("grant_type")+"="+encodeURIComponent(grant_type));
-         urlEncodedDataPairs.push(encodeURIComponent("scope")+"="+encodeURIComponent(scope));
-         urlEncodedData = urlEncodedDataPairs.join( '&' ).replace( /%20/g, '+' );
+    <script type="module">
+      import { h, render } from '/js/web_modules/preact.js';
+      import htm from '/js/web_modules/htm.js';
+      const html = htm.bind(h);
 
-         XHR.addEventListener( 'load', function(event) {
-             if (XHR.status == 401){
-                alert("Access denied");
-             }else if (XHR.status == 200){
-               $(".login-dark").hide();
-               $("div #app").show();
-               render(html`<${App} />`, document.getElementById("app"), document.getElementById("loading-logo-container"));
-
-             }
-             
-
-          } );
-        
-          // Define what happens in case of error
-          XHR.addEventListener( 'error', function(event) {
-            alert( 'Oops! Something went wrong.' );
-          } );
-        
-          // Set up our request
-          XHR.open( 'POST', url );
-        
-          // Add the required HTTP header for form data POST requests
-          XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-        
-          // Finally, send our data.
-          XHR.send( urlEncodedData );
-
-        
-        
-        
-    }
-    )
-});
-
-  </script>
-
-  <noscript>
-    <style>
-      .noscript {
-        text-align: center;
-        padding: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        font-size: large;
-      }
-
-      .noscript a {
-        display: inline;
-        color: blue;
-        text-decoration: underline;
-      }
-
-      #app {
-        display: none;
-      }
-
-      .logo {
-        height: 200px;
-        margin: 30px;
-      }
-
-      h2 {
-        margin-top: 25px;
-        margin-bottom: 5px;
-        font-weight: bold;
-      }
-    </style>
-    <div class="noscript">
-      <img class="logo" src="/logo" />
-      <br />
-      <p>
-        This website is powered by <a href="https://owncast.online" rel="noopener noreferrer" target="_blank">Owncast</a>.
-      </p>
-      <p>
-        Owncast uses JavaScript for playing the HTTP Live Streaming (HLS) video, and its chat client. But your web browser does not seem to support JavaScript, or you have it disabled.
-      </p>
-      <p>
-        For the best experience, you should use a different browser with JavaScript support. If you have disabled JavaScript in your browser, you can re-enable it.
-      </p>
-      <h2>
-        How can I watch this stream without JavaScript?
-      </h2>
-      <p> 
-        You can open the URL of this website in your media player (such as <a href="https://mpv.io" rel="noopener noreferrer" target="_blank">mpv</a> or <a href="https://www.videolan.org/vlc/" rel="noopener noreferrer" target="_blank">VLC</a>) to watch the stream.
-      </p>
-      <h2>
-        How can I chat with the others without JavaScript?
-      </h2>
-      <p>
-        Currently, there is no option to use the chat without JavaScript.
-      </p>
-    </div>
-  </noscript>
-</body>
- 
+      import VideoOnly from './js/app-video-only.js';
+      render(html`<${VideoOnly} />`, document.getElementById("video-only"));
+    </script>
+  </body>
 </html>

@@ -3,10 +3,12 @@
     "@joeattardi/emoji-button": "./@joeattardi/emoji-button.js",
     "@videojs/http-streaming/dist/videojs-http-streaming.min.js": "./@videojs/http-streaming/dist/videojs-http-streaming.min.js",
     "@videojs/themes/fantasy/index.css": "./@videojs/themes/fantasy/index.css",
+    "axios/dist/axios.min.js": "./axios/dist/axios.min.js",
     "htm": "./htm.js",
     "mark.js/dist/mark.es6.min.js": "./markjs/dist/mark.es6.min.js",
     "micromodal/dist/micromodal.min.js": "./micromodal/dist/micromodal.min.js",
     "preact": "./preact.js",
+    "qs/dist/qs.js": "./qs/dist/qs.js",
     "tailwindcss/dist/tailwind.min.css": "./tailwindcss/dist/tailwind.min.css",
     "video.js": "./video.js/core.js",
     "video.js/core.js": "./videojs/core.js"
