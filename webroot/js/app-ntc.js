@@ -4,6 +4,8 @@ const html = htm.bind(h);
 
 import VideoPoster from './components/video-poster.js';
 import { OwncastPlayer } from './components/player.js';
+import LoginForm from './components/login-form.js';
+import { login } from './components/keycloak.js';
 
 import {
   addNewlines,
@@ -30,6 +32,7 @@ export default class VideoOnly extends Component {
 
       playerActive: false, // player object is active
       streamOnline: false, // stream is active/online
+      authToken: false,
 
       isPlaying: false,
 
@@ -53,6 +56,7 @@ export default class VideoOnly extends Component {
     this.handlePlayerPlaying = this.handlePlayerPlaying.bind(this);
     this.handlePlayerEnded = this.handlePlayerEnded.bind(this);
     this.handlePlayerError = this.handlePlayerError.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
 
     // fetch events
     this.getConfig = this.getConfig.bind(this);
@@ -69,7 +73,6 @@ export default class VideoOnly extends Component {
       onEnded: this.handlePlayerEnded,
       onError: this.handlePlayerError,
     });
-    this.player.init();
   }
 
   componentWillUnmount() {
@@ -158,6 +161,7 @@ export default class VideoOnly extends Component {
   // when videojs player is ready, start polling for stream
   handlePlayerReady() {
     this.getStreamStatus();
+    console.log("Init Stream Status")
     this.statusTimer = setInterval(this.getStreamStatus, TIMER_STATUS_UPDATE);
   }
 
@@ -193,8 +197,8 @@ export default class VideoOnly extends Component {
 
   // play video!
   handleOnlineMode() {
+    console.log("Start On Line")
     this.player.startPlayer();
-
     this.streamDurationTimer = setInterval(
       this.setCurrentStreamDuration,
       TIMER_STREAM_DURATION_COUNTER
@@ -211,10 +215,25 @@ export default class VideoOnly extends Component {
     console.log(`>>> App Error: ${error}`);
   }
 
+  handleLogin(userInfo){
+    const req = login(userInfo).then(data=>{
+      this.setState({
+        authToken: data.access_token,
+        streamStatusMessage: "Logged into to stream successfully",
+      })
+      this.player.init();
+    },err=>{
+      this.setState({
+        authToken:"",
+        streamStatusMessage: "Unable to login to stream",
+      })
+    });
+  }
+
   render(props, state) {
     const {
       configData,
-
+      authToken,
       viewerCount,
       playerActive,
       streamOnline,
@@ -234,18 +253,30 @@ export default class VideoOnly extends Component {
     }
 
     const mainClass = playerActive ? 'online' : '';
-
+    const showPlayer = authToken ? 'visible' : 'hidden';
     const poster = isPlaying
       ? null
       : html` <${VideoPoster} offlineImage=${logo} active=${streamOnline} /> `;
+    const loginForm = authToken ? null : html`
+      <${LoginForm}/>
+    `;
     return html`
-      <main class=${mainClass}>
+      <main class=${mainClass} class="bg-black">
         <style>
           ${customStyles}
         </style>
+        <section
+          id="login-form-section"
+          aria-label="Login Form"
+          class="bg-white"
+          style="visibility:${showPlayer};"
+        >
+          ${loginForm}
+        </section>
         <div
           id="video-container"
-          class="flex owncast-video-container bg-black w-full bg-center bg-no-repeat flex flex-col items-center justify-start"
+          class="flex owncast-video-container w-full bg-center bg-no-repeat flex flex-col items-center justify-start"
+          style="visibility:${showPlayer};"
         >
           <video
             class="video-js vjs-big-play-centered display-block w-full h-full"
@@ -256,7 +287,6 @@ export default class VideoOnly extends Component {
           ></video>
           ${poster}
         </div>
-
         <section
           id="stream-info"
           aria-label="Stream status"

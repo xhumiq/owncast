@@ -37,16 +37,17 @@ start: build
 
 docker_build: docker_loc_build
 
-build-all: clean-dist build-admin build-app build-css
+build-all: clean-dist build-admin pack-webui build-app build-css
 
 build: build-app
-	@cp -R ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot ./
 
 build-app:
 	@export GOPRIVATE=bitbucket.org/xhumiq; \
 	go mod tidy && \
-	export CGO_ENABLED=1; export GOOS=linux; go build -ldflags "${BUILD_FLAGS}" -o ${BUILD_PATH}/owncast/${BUILD_DISTRO}/${BIN_NAME}
-	@echo "Built ${BUILD_PATH}/owncast/${BUILD_DISTRO}/${BIN_NAME}"
+	export CGO_ENABLED=1; export GOOS=linux; go build -ldflags "${BUILD_FLAGS}" -o ${BUILD_PATH}/owncast/${BUILD_DISTRO}/${BIN_NAME} && \
+	cp -R webroot/ ${BUILD_PATH}/owncast/${BUILD_DISTRO}/ && \
+	cp -R static/ ${BUILD_PATH}/owncast/${BUILD_DISTRO}/ && \
+	echo "Built ${BUILD_PATH}/owncast/${BUILD_DISTRO}/${BIN_NAME}"
 
 build-app-new:
 	@mkdir -p ${BUILD_PATH}/owncast/${BUILD_DISTRO}
@@ -63,13 +64,16 @@ build-app-new:
 build-admin:
 	@build/admin/bundleAdmin.sh
 
+pack-webui:
+	@cd build/javascript/ && \
+	npm run build
+
 build-css:
 	@mkdir -p ${BUILD_PATH}/owncast/${BUILD_DISTRO}
 	@rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot
-	@cp -R webroot/ ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot/
 	@cd build/javascript; \
 	npm install --quiet --no-progress && \
-	NODE_ENV="production" ./node_modules/.bin/tailwind build | ./node_modules/.bin/postcss >  "${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot/js/web_modules/tailwindcss/dist/tailwind.min.css"
+	NODE_ENV="production" ./node_modules/.bin/tailwind build | ./node_modules/.bin/postcss >  "webroot/js/web_modules/tailwindcss/dist/tailwind.min.css"
 
 clean-dist:
 	@rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}
