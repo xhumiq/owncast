@@ -66,6 +66,7 @@ build-admin:
 
 pack-webui:
 	@cd build/javascript/ && \
+	npm install --quiet --no-progress && \
 	npm run build
 
 build-css:
@@ -73,7 +74,7 @@ build-css:
 	@rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot
 	@cd build/javascript; \
 	npm install --quiet --no-progress && \
-	NODE_ENV="production" ./node_modules/.bin/tailwind build | ./node_modules/.bin/postcss >  "webroot/js/web_modules/tailwindcss/dist/tailwind.min.css"
+	NODE_ENV="production" ./node_modules/.bin/tailwind build | ./node_modules/.bin/postcss >  "../../webroot/js/web_modules/tailwindcss/dist/tailwind.min.css"
 
 clean-dist:
 	@rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}
