@@ -1,0 +1,8 @@
+{
+    "realm": "chat-acp",
+    "auth-server-url": "https://auth-jp1.kefacp.com/auth",
+    "ssl-required": "external",
+    "resource": "owncast",
+    "public-client": true,
+    "confidential-port": 0
+  }
