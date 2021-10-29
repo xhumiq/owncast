@@ -5,6 +5,7 @@ var apiConfig={
   clientId: "owncast",
   grantType: "password",
   scope: "openid",
+  defaultUser: "kefych",
   url: "https://auth-jp1.kefacp.com/auth/realms/chat-acp/protocol/openid-connect/token"
 }
 
@@ -22,6 +23,7 @@ export function login(userData){
     client_id: apiConfig.clientId,
     grant_type: apiConfig.grantType,
     scope: apiConfig.scope,
+    username: apiConfig.defaultUser,
     ...userData,
   }
   const options = {

@@ -251,7 +251,6 @@ export default class VideoOnly extends Component {
     } else if (lastDisconnectTime) {
       viewerCountMessage = makeLastOnlineString(lastDisconnectTime);
     }
-
     const mainClass = playerActive ? 'online' : '';
     const showPlayer = authToken ? 'visible' : 'hidden';
     const showLogin = !!authToken;
@@ -259,7 +258,7 @@ export default class VideoOnly extends Component {
       ? null
       : html` <${VideoPoster} offlineImage=${logo} active=${streamOnline} /> `;
     const loginForm = authToken ? null : html`
-      <${LoginForm} showLogin=${showLogin}/>
+      <${LoginForm} onSubmit=${this.handleLogin}/>
     `;
     return html`
       <main class=${mainClass} class="bg-black">
@@ -270,7 +269,6 @@ export default class VideoOnly extends Component {
         <div
           id="video-container"
           class="flex owncast-video-container w-full bg-center bg-no-repeat flex flex-col items-center justify-start"
-          style="visibility:${showPlayer};"
         >
           <video
             class="video-js vjs-big-play-centered display-block w-full h-full"
@@ -281,16 +279,6 @@ export default class VideoOnly extends Component {
           ></video>
           ${poster}
         </div>
-        <section
-          id="stream-info"
-          aria-label="Stream status"
-          class="flex flex-row justify-between font-mono py-2 px-4 bg-gray-900 text-indigo-200 shadow-md border-b border-gray-100 border-solid"
-        >
-          <span class="text-xs">${streamStatusMessage}</span>
-          <span id="stream-viewer-count" class="text-xs text-right"
-            >${viewerCountMessage}</span
-          >
-        </section>
       </main>
     `;
   }
