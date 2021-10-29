@@ -254,25 +254,19 @@ export default class VideoOnly extends Component {
 
     const mainClass = playerActive ? 'online' : '';
     const showPlayer = authToken ? 'visible' : 'hidden';
+    const showLogin = !!authToken;
     const poster = isPlaying
       ? null
       : html` <${VideoPoster} offlineImage=${logo} active=${streamOnline} /> `;
     const loginForm = authToken ? null : html`
-      <${LoginForm}/>
+      <${LoginForm} showLogin=${showLogin}/>
     `;
     return html`
       <main class=${mainClass} class="bg-black">
         <style>
           ${customStyles}
         </style>
-        <section
-          id="login-form-section"
-          aria-label="Login Form"
-          class="bg-white"
-          style="visibility:${showPlayer};"
-        >
-          ${loginForm}
-        </section>
+        ${loginForm}
         <div
           id="video-container"
           class="flex owncast-video-container w-full bg-center bg-no-repeat flex flex-col items-center justify-start"

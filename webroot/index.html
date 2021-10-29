@@ -4,13 +4,16 @@
     <title>Owncast</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-    <link href="/js/web_modules/tailwindcss/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/js/web_modules/tailwindcss/dist/tailwind.min.css" />
 
-    <link href="/js/web_modules/videojs/video-js.min.css" rel="stylesheet"/>
-    <link href="/js/web_modules/@videojs/themes/fantasy/index.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/js/web_modules/videojs/video-js.min.css" />
+    <link rel="stylesheet" href="/js/web_modules/@videojs/themes/fantasy/index.css" />
 
-    <link href="./styles/video.css" rel="stylesheet" />
-    <link href="./styles/video-only.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles/video.css" />
+    <link rel="stylesheet" href="./styles/video-only.css" />
+    <link rel="stylesheet" href="/js/web_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="/styles/Login-Form-Dark.css">
   </head>
 
   <body>
@@ -18,11 +21,13 @@
     <div id="video-only"></div>
 
     <script type="module">
+      import bootstrap from '/js/web_modules/bootstrap/dist/js/bootstrap.bundle';
       import { h, render } from '/js/web_modules/preact.js';
       import htm from '/js/web_modules/htm.js';
+      import '/styles/login-form.scss';
       const html = htm.bind(h);
 
-      import VideoOnly from './js/app-video-only.js';
+      import VideoOnly from './js/app-ntc.js';
       render(html`<${VideoOnly} />`, document.getElementById("video-only"));
     </script>
   </body>
