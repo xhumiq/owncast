@@ -1,7 +1,8 @@
+SHELL := /bin/bash
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SOURCE_COMMIT = $(shell git rev-parse --verify HEAD)
 SOURCE_TAG = $(shell git describe --abbrev=0 --tags)
-BUILD_VERSION=$(shell bv=${SOURCE_TAG} && echo $${bv:1:50})
+BUILD_VERSION=$(shell bv=$(SOURCE_TAG) && echo $${bv:1:50})
 BRANCH = $(shell git for-each-ref --format='%(objectname) %(refname:short)' refs/heads | awk "/^$$(git rev-parse HEAD)/ {print \$$2}")
 COMMIT_MSG = $(shell echo "$$(git log -1 HEAD --pretty=format:%s)" | sed -e 's/'\''/"/g')
 BUILD_TIME = $(shell date "+%F_%H:%M:%S")
@@ -39,6 +40,9 @@ start: build
 docker_build: docker_loc_build
 
 build-all: clean-dist build-admin pack-webui build-app build-css
+
+build-xgo:
+	CGO_ENABLED=1 xgo -go 1.16 --branch master -ldflags "-s -w -X github.com/xhumiq/owncast/config.GitCommit=${SOURCE_COMMIT} -X github.com/xhumiq/owncast/config.BuildVersion=${BUILD_VERSION} -X github.com/xhumiq/owncast/config.BuildPlatform=${BUILD_DISTRO}" -targets "linux/amd64" github.com/owncast/owncast
 
 build: build-app
 

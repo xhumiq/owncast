@@ -1,4 +1,4 @@
-module github.com/owncast/owncast
+module github.com/xhumiq/owncast
 
 go 1.14
 
