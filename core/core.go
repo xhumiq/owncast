@@ -106,7 +106,9 @@ func transitionToOfflineVideoStreamContent() {
 
 	// Copy the logo to be the thumbnail
 	logo := data.GetLogoPath()
-	err := utils.Copy(filepath.Join("data", logo), "webroot/thumbnail.jpg")
+	lpath := filepath.Join("data", logo)
+	lpath = "./webroot/img/Loading.jpg"
+	err := utils.Copy(lpath, "webroot/thumbnail.jpg")
 	if err != nil {
 		log.Warnln(err)
 	}

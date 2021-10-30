@@ -38,10 +38,11 @@ export default class VideoOnly extends Component {
 
       //status
       streamStatusMessage: MESSAGE_OFFLINE,
+      loginErrorMsg: "",
       viewerCount: '',
       lastDisconnectTime: null,
     };
-
+    this.updateDuration = TIMER_STATUS_UPDATE;
     // timers
     this.playerRestartTimer = null;
     this.offlineTimer = null;
@@ -73,6 +74,7 @@ export default class VideoOnly extends Component {
       onEnded: this.handlePlayerEnded,
       onError: this.handlePlayerError,
     });
+    this.player.init();
   }
 
   componentWillUnmount() {
@@ -162,8 +164,7 @@ export default class VideoOnly extends Component {
   // when videojs player is ready, start polling for stream
   handlePlayerReady() {
     this.getStreamStatus();
-    console.log("Init Stream Status")
-    this.statusTimer = setInterval(this.getStreamStatus, TIMER_STATUS_UPDATE);
+    this.statusTimer = setInterval(this.getStreamStatus, this.updateDuration);
   }
 
   handlePlayerPlaying() {
@@ -189,6 +190,7 @@ export default class VideoOnly extends Component {
 
   // stop status timer and disable chat after some time.
   handleOfflineMode() {
+    this.updateDuration = TIMER_STATUS_UPDATE;
     clearInterval(this.streamDurationTimer);
     this.setState({
       streamOnline: false,
@@ -198,13 +200,13 @@ export default class VideoOnly extends Component {
 
   // play video!
   handleOnlineMode() {
-    console.log("Start On Line")
+    this.updateDuration = 5000;
     this.player.startPlayer();
     this.streamDurationTimer = setInterval(
       this.setCurrentStreamDuration,
       TIMER_STREAM_DURATION_COUNTER
     );
-
+    console.log("Set State OnLine", true)
     this.setState({
       playerActive: true,
       streamOnline: true,
@@ -222,15 +224,16 @@ export default class VideoOnly extends Component {
         authToken: data.access_token,
         streamStatusMessage: "Logged into to stream successfully",
       })
-      this.player.init();
     },err=>{
       this.setState({
         authToken:"",
+        loginErrorMsg: "密碼錯誤 Invalid Password",
         streamStatusMessage: "Unable to login to stream",
       })
     });
   }
 
+// 系統錯誤 - 請稍後再試。
   render(props, state) {
     const {
       configData,
@@ -241,8 +244,8 @@ export default class VideoOnly extends Component {
       streamStatusMessage,
       lastDisconnectTime,
       isPlaying,
+      loginErrorMsg,
     } = state;
-
     const { logo = TEMP_IMAGE, customStyles } = configData;
 
     let viewerCountMessage = '';
@@ -259,10 +262,11 @@ export default class VideoOnly extends Component {
       ? null
       : html` <${VideoPoster} offlineImage=${logo} active=${streamOnline} /> `;
     const loginForm = authToken ? null : html`
-      <${LoginForm} server="${configData.streamTitle}" onSubmit=${this.handleLogin}/>
+      <${LoginForm} server="${configData.streamTitle}" onSubmit=${this.handleLogin} errorMsg=${loginErrorMsg}/>
     `;
+    console.log("Status", streamOnline, playerActive)
     return html`
-      <main class=${mainClass} class="bg-black">
+      <main id="app-ntc" class=${mainClass}>
         <style>
           ${customStyles}
         </style>
@@ -280,6 +284,16 @@ export default class VideoOnly extends Component {
           ></video>
           ${poster}
         </div>
+        <section
+          id="stream-info"
+          aria-label="Stream status"
+          class="flex flex-row justify-between font-mono py-2 px-4 bg-gray-900 text-indigo-200 shadow-md border-b border-gray-100 border-solid"
+        >
+          <span class="text-xs">${streamStatusMessage}</span>
+          <span id="stream-viewer-count" class="text-xs text-right"
+          >${viewerCountMessage}</span
+          >
+        </section>
       </main>
     `;
   }

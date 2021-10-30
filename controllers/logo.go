@@ -14,13 +14,15 @@ import (
 
 // GetLogo will return the logo image as a response.
 func GetLogo(w http.ResponseWriter, r *http.Request) {
-	imageFilename := data.GetLogoPath()
-	if imageFilename == "" {
-		returnDefault(w)
-		return
-	}
-	imagePath := filepath.Join("data", imageFilename)
-	imageBytes, err := getImage(imagePath)
+	//imageFilename := data.GetLogoPath()
+	//if imageFilename == "" {
+		//returnDefault(w)
+		//return
+	//}
+	//imagePath := filepath.Join("data", imageFilename)
+  imagePath := filepath.Join(config.WebRoot, "img", "Loading.jpg")
+  imageFilename := imagePath
+  imageBytes, err := getImage(imagePath)
 	if err != nil {
 		returnDefault(w)
 		return

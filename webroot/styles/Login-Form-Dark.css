@@ -1,3 +1,30 @@
+@media screen and (max-width: 540px) {
+  #app-ntc{
+    position: relative;
+    height: 100%;
+  }
+  .login-dark {
+    background: #475d62;
+    background-image:none !important;
+    height:100%;
+  }
+  .login-dark form{
+    padding:5px 10px !important;
+  }
+  .login-dark h3{
+    font-size: 40px !important;
+  }
+  .login-dark input{
+    font-size: 35px !important;
+  }
+  .login-dark button{
+    font-size: 35px;
+  }
+  #video-container{
+    margin: 0px auto !important;
+  }
+}
+
 .login-dark {
   position: absolute;
   left:0;
@@ -21,6 +48,7 @@
   left: 50%;
   color: #fff;
   box-shadow: 3px 3px 4px rgba(0,0,0,0.2);
+  opacity: 90%;
 }
 
 .login-dark .illustration {
@@ -38,6 +66,23 @@
   box-shadow: none;
   outline: none;
   color: inherit;
+}
+
+.login-dark form .error-msg {
+  color: #FF6666;
+  font-weight: bold;
+  font-size: 24px;
+  display: none;
+  text-align: center;
+}
+
+.login-dark form .error-msg span{
+  display:block;
+  text-align: center;
+}
+
+.login-dark form .error-msg.error-visible {
+  display: block;
 }
 
 .login-dark form .btn-primary {

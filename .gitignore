@@ -22,6 +22,7 @@ vendor/
 /config*.yaml
 /stats.json
 owncast
+webroot/img/stream.m3u8
 webroot/thumbnail.jpg
 webroot/preview.gif
 webroot/hls
