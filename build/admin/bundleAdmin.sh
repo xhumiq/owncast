@@ -19,7 +19,7 @@ echo "Cloning owncast admin into $TMP_DIR..."
 git clone https://github.com/owncast/owncast-admin $REPO_DIR 2> /dev/null
 
 echo "Installing npm modules for the owncast admin..."
-(cd ${REPO_DIR}; npm --silent install 2> /dev/null)
+(cd ${REPO_DIR}; npm --quiet --no-progress install --unsafe-perm)
 
 echo "Building owncast admin..."
 rm -rf ${REPO_DIR}/.next

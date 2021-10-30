@@ -67,18 +67,18 @@ build-app-new:
 		go-build:${GOLANG_TAG}
 
 build-admin:
-	@build/admin/bundleAdmin.sh
+	@build/admin/bundleAdmin.sh || true
 
 pack-webui:
 	@cd build/javascript/ && \
-	npm install --quiet --no-progress && \
+	npm install --quiet --no-progress --unsafe-perm && \
 	npm run build
 
 build-css:
 	@mkdir -p ${BUILD_PATH}/owncast/${BUILD_DISTRO}
 	@rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot
 	@cd build/javascript; \
-	npm install --quiet --no-progress && \
+	npm install --quiet --no-progress --unsafe-perm && \
 	NODE_ENV="production" ./node_modules/.bin/tailwind build | ./node_modules/.bin/postcss >  "../../webroot/js/web_modules/tailwindcss/dist/tailwind.min.css"
 
 clean-dist:
