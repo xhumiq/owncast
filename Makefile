@@ -6,8 +6,8 @@ BUILD_VERSION=$(shell bv=$(SOURCE_TAG) && echo $${bv:1:50})
 BRANCH = $(shell git for-each-ref --format='%(objectname) %(refname:short)' refs/heads | awk "/^$$(git rev-parse HEAD)/ {print \$$2}")
 COMMIT_MSG = $(shell echo "$$(git log -1 HEAD --pretty=format:%s)" | sed -e 's/'\''/"/g')
 BUILD_TIME = $(shell date "+%F_%H:%M:%S")
-BUILD_PATH = /ntc/builds/meet
-PKG_PATH = /ntc/packages/owncast
+BUILD_PATH = $(or ${go_build_path},/ntc/builds/meet)
+PKG_PATH = $(or ${go_pkg_path},/ntc/packages/owncast)
 BUILD_DISTRO = linux-64bit
 BUILD_FLAGS = -s -X github.com/owncast/owncast/config.GitCommit=${SOURCE_COMMIT} -X github.com/owncast/owncast/config.VersionNumber=v${BUILD_VERSION} -X github.com/owncast/owncast/config.BuildPlatform=${BUILD_DISTRO}
 CGO_ENABLED = 0
@@ -30,7 +30,7 @@ export
 
 all: build-app
 
-ecr_push: clean-dist build-admin build-css docker_build tag aws_login push
+ecr_push: clean-dist build-admin pack-webui build-css docker_build tag aws_login push
 
 start: build
 	cd ${BUILD_PATH}/owncast/${BUILD_DISTRO} && \
@@ -39,7 +39,7 @@ start: build
 
 docker_build: docker_loc_build
 
-build-all: clean-dist build-admin pack-webui build-app build-css
+build-all: clean-dist build-admin pack-webui build-css build-app
 
 build-xgo:
 	CGO_ENABLED=1 xgo -go 1.16 --branch master -ldflags "-s -w -X github.com/xhumiq/owncast/config.GitCommit=${SOURCE_COMMIT} -X github.com/xhumiq/owncast/config.BuildVersion=${BUILD_VERSION} -X github.com/xhumiq/owncast/config.BuildPlatform=${BUILD_DISTRO}" -targets "linux/amd64" github.com/owncast/owncast
@@ -50,6 +50,8 @@ build-app:
 	@export GOPRIVATE=bitbucket.org/xhumiq; \
 	go mod tidy && \
 	export CGO_ENABLED=1; export GOOS=linux; go build -ldflags "${BUILD_FLAGS}" -o ${BUILD_PATH}/owncast/${BUILD_DISTRO}/${BIN_NAME} && \
+	rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot && \
+	rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}/static && \
 	cp -R webroot/ ${BUILD_PATH}/owncast/${BUILD_DISTRO}/ && \
 	cp -R static/ ${BUILD_PATH}/owncast/${BUILD_DISTRO}/ && \
 	echo "Built ${BUILD_PATH}/owncast/${BUILD_DISTRO}/${BIN_NAME}"
@@ -67,7 +69,7 @@ build-app-new:
 		go-build:${GOLANG_TAG}
 
 build-admin:
-	@build/admin/bundleAdmin.sh || true
+	@build/admin/bundleAdmin.sh
 
 pack-webui:
 	@cd build/javascript/ && \
@@ -76,7 +78,6 @@ pack-webui:
 
 build-css:
 	@mkdir -p ${BUILD_PATH}/owncast/${BUILD_DISTRO}
-	@rm -rf ${BUILD_PATH}/owncast/${BUILD_DISTRO}/webroot
 	@cd build/javascript; \
 	npm install --quiet --no-progress --unsafe-perm && \
 	NODE_ENV="production" ./node_modules/.bin/tailwind build | ./node_modules/.bin/postcss >  "../../webroot/js/web_modules/tailwindcss/dist/tailwind.min.css"
@@ -89,7 +90,7 @@ clean-hls:
 
 package-zip: build-all
 	@mkdir -p ${PKG_PATH}
-	@rm ${PKG_PATH}/owncast-${BUILD_VERSION}-${BUILD_DISTRO}.zip
+	@rm -f ${PKG_PATH}/owncast-${BUILD_VERSION}-${BUILD_DISTRO}.zip
 	@cd ${BUILD_PATH}/owncast/${BUILD_DISTRO}; \
 	zip -r -q -8 ${PKG_PATH}/owncast-${BUILD_VERSION}-${BUILD_DISTRO}.zip .
 	@echo "zipped ${PKG_PATH}/owncast-${BUILD_VERSION}-${BUILD_DISTRO}.zip"

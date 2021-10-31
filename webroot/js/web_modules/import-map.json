@@ -49,6 +49,7 @@
     "bootstrap/dist/js/bootstrap.min.js": "./bootstrap/dist/js/bootstrap.min.js",
     "bootstrap/dist/js/bootstrap.min.js.map": "./bootstrap/dist/js/bootstrap.min.js.map",
     "htm": "./htm.js",
+    "keycloak-js/dist/keycloak.js": "./keycloak-js/dist/keycloak.js",
     "mark.js/dist/mark.es6.min.js": "./markjs/dist/mark.es6.min.js",
     "micromodal/dist/micromodal.min.js": "./micromodal/dist/micromodal.min.js",
     "preact": "./preact.js",
