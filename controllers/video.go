@@ -1,7 +1,8 @@
 package controllers
 
 import (
-	"net/http"
+  "github.com/owncast/owncast/router/middleware"
+  "net/http"
 	"sort"
 
 	"github.com/owncast/owncast/core/data"
@@ -54,6 +55,6 @@ func GetVideoStreamOutputVariants(w http.ResponseWriter, r *http.Request) {
 		}
 		response[i] = variantResponse
 	}
-
+  middleware.EnableCors(&w)
 	WriteResponse(w, response)
 }

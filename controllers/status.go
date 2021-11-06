@@ -22,7 +22,7 @@ func GetStatus(w http.ResponseWriter, r *http.Request) {
 		VersionNumber:      status.VersionNumber,
 		StreamTitle:        status.StreamTitle,
 	}
-
+  middleware.EnableCors(&w)
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		InternalErrorHandler(w, err)
