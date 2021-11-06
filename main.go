@@ -36,10 +36,19 @@ func main() {
   serverName := flag.String("serverName", "", "Set server name")
   newStreamKey := flag.String("streamKey", "", "Set your stream key/admin password")
   newStreamKeyFile := flag.String("streamKeyFile", "", "Stream key/admin password file")
+  pullRTMP := flag.String("pullrtmp", "", "RTMP Video Source")
+
+  flag.Parse()
 
   if *serverName == ""{
     if f, ok := os.LookupEnv("OWNCAST_SERVER"); ok{
       *serverName = f
+    }
+  }
+
+  if *pullRTMP == ""{
+    if f, ok := os.LookupEnv("RTMP_VIDEO_SOURCE"); ok{
+      *pullRTMP = f
     }
   }
 
@@ -73,8 +82,6 @@ func main() {
       log.Infoln("Stream key file found", *newStreamKeyFile)
     }
   }
-
-  flag.Parse()
 
 	if *logDirectory != "" {
 		config.LogDirectory = *logDirectory
@@ -165,7 +172,12 @@ func main() {
 	}
 	config.WebServerIP = data.GetHTTPListenAddress()
 
-	// Set the rtmp server port
+  if *pullRTMP != "" {
+    log.Println("Using RTMP Video Source", *pullRTMP)
+    config.PullRTMPSource = *pullRTMP
+  }
+
+  // Set the rtmp server port
 	if *rtmpPortOverride > 0 {
 		log.Println("Saving new RTMP server port number to", *rtmpPortOverride)
 		if err := data.SetRTMPPortNumber(float64(*rtmpPortOverride)); err != nil {
@@ -178,6 +190,7 @@ func main() {
     log.Println("WebServer Port:", data.GetHTTPPortNumber())
     log.Println("     RTMP Port:", data.GetRTMPPortNumber())
     log.Println("    Stream Key:", data.GetStreamKey())
+    log.Println("   RTMP Source:", config.PullRTMPSource)
 	  return
   }
 	// starts the core

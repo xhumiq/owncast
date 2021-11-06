@@ -2,7 +2,9 @@ package rtmp
 
 import (
 	"fmt"
+  "github.com/owncast/owncast/config"
   "github.com/owncast/owncast/utils"
+  "github.com/pkg/errors"
   "io"
 	"net"
 	"time"
@@ -67,6 +69,30 @@ func Start(setStreamAsConnected func(*io.PipeReader), setBroadcaster func(models
 	}
 }
 
+var (
+  IsPulling = false
+)
+
+// Pull Video Feed from External Source
+func Pull(setStreamAsConnected func(*io.PipeReader), setBroadcaster func(models.Broadcaster)) {
+  _setStreamAsConnected = setStreamAsConnected
+  _setBroadcaster = setBroadcaster
+  go func(){
+    for{
+      cc := rtmp.NewClient()
+      log.Infof("Connecting to stream %s", config.PullRTMPSource)
+      c, nc, err := cc.Dial(config.PullRTMPSource, rtmp.PrepareReading)
+      if err != nil {
+        err = errors.Wrapf(err, "Unable to connect to source: %s", config.PullRTMPSource)
+        log.Panicln(err)
+      }
+      IsPulling = true
+      HandleConn(c, nc)
+      time.Sleep(500 * time.Millisecond)
+    }
+  }()
+}
+
 // HandleConn is fired when an inbound RTMP connection takes place.
 func HandleConn(c *rtmp.Conn, nc net.Conn) {
 	c.LogTagEvent = func(isRead bool, t flvio.Tag) {
@@ -82,7 +108,7 @@ func HandleConn(c *rtmp.Conn, nc net.Conn) {
 		return
 	}
 
-	if !secretMatch(data.GetStreamKey(), c.URL.Path) {
+	if !IsPulling && !secretMatch(data.GetStreamKey(), c.URL.Path) {
 		log.Errorln("invalid streaming key; rejecting incoming stream")
 		_ = nc.Close()
 		return

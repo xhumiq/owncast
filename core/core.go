@@ -70,7 +70,11 @@ func Start() error {
 	}
 
 	// start the rtmp server
-	go rtmp.Start(setStreamAsConnected, setBroadcaster)
+	if config.PullRTMPSource==""{
+    go rtmp.Start(setStreamAsConnected, setBroadcaster)
+  }else{
+    go rtmp.Pull(setStreamAsConnected, setBroadcaster)
+  }
 
 	rtmpPort := data.GetRTMPPortNumber()
 	log.Infof("RTMP is accepting inbound streams on port %d.", rtmpPort)

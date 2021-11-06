@@ -34,6 +34,8 @@ var GitCommit = ""
 // BuildPlatform is the optional platform this release was built for.
 var BuildPlatform = "dev"
 
+var PullRTMPSource = ""
+
 // GetCommit will return an identifier used for identifying the point in time this build took place.
 func GetCommit() string {
 	if GitCommit == "" {
